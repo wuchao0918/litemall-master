@@ -552,11 +552,12 @@ public class WxOrderService {
             result = wxPayService.createOrder(orderRequest);
 
             //缓存prepayID用于后续模版通知
-            String prepayId = result.getPackageValue();
+            String prepayId = "1";
+         //  String prepayId = result.getPackageValue();
             prepayId = prepayId.replace("prepay_id=", "");
             LitemallUserFormid userFormid = new LitemallUserFormid();
             userFormid.setOpenid(user.getWeixinOpenid());
-            userFormid.setFormid(prepayId);
+           userFormid.setFormid(prepayId);
             userFormid.setIsprepay(true);
             userFormid.setUseamount(3);
             userFormid.setExpireTime(LocalDateTime.now().plusDays(7));

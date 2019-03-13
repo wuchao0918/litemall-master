@@ -83,6 +83,7 @@ public class WxOrderController {
      */
     @PostMapping("prepay")
     public Object prepay(@LoginUser Integer userId, @RequestBody String body, HttpServletRequest request) {
+        System.out.println("aa"+userId+body+request);
         return wxOrderService.prepay(userId, body, request);
     }
 

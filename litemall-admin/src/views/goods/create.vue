@@ -244,7 +244,7 @@
       </el-dialog>
     </el-card>
 
-   <!-- <el-card class="box-card">
+    <!--<el-card class="box-card">
       <h3>图书参数</h3>
       <el-button :plain="true" type="primary" @click="handleAttributeShow">添加</el-button>
       <el-table :data="attributes">
@@ -277,8 +277,8 @@
           <el-button type="primary" @click="handleAttributeAdd">确定</el-button>
         </div>
       </el-dialog>
-    </el-card>
--->
+    </el-card> -->
+
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
       <el-button type="primary" @click="handlePublish">上架</el-button>
