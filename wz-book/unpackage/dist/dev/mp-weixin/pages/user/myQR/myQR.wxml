@@ -1,0 +1,2 @@
+<import src="./myQR.vue.wxml" />
+    <template is="5e0c8922" data="{{ ...$root['0'], $root }}"/>
