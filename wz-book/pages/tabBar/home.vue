@@ -20,31 +20,29 @@
 		<!-- 轮播图 -->
 		<view class="swiper">
 			<view class="swiper-box">
-				<swiper circular="true" autoplay="true" @change="swiperChange">
-					<swiper-item v-for="swiper in swiperList" :key="swiper.id">
-						<image :src="swiper.img" @tap="toSwiper(swiper)"></image>
+				<swiper  circular="true" autoplay="true" @change="swiperChange">
+					<swiper-item v-for="(item,index)  in banner" :key="index">
+						<image :src="item.url" @tap="toSwiper(item)"></image>
 					</swiper-item>
 				</swiper>
 				<view class="indicator">
-					<view class="dots" v-for="(swiper, index) in swiperList" :class="[currentSwiper >= index ? 'on' : '']" :key="index"></view>
+					<view class="dots" v-for="(item, index) in banner" :class="[currentSwiper >= index ? 'on' : '']" :key="index"></view>
 				</view>
 			</view>
 		</view>
 		<!-- 分类列表 -->
+		
 		<view class="category-list">
-			<view class="category" v-for="(row, index) in categoryList" :key="index" @tap="toCategory(row)">
+			<view class="category" v-for="(row, index) in channel" :key="index" @tap="toCategory(row)">
 				<view class="img">
-					<image :src="row.img"></image>
+					<image :src="row.iconUrl"></image>
 				</view>
 				<view class="text">{{ row.name }}</view>
 			</view>
 		</view>
-		
-		<!-- 广告图 -->
-		<!-- <view class="banner"><image src="../../static/img/banner.jpg"></image></view> -->
-		<!-- 活动区 -->
+
 		<view class="promotion">
-			<view class="text">推荐社区</view>
+			<view class="text">猜你喜欢</view>
 			<view class="list">
 				<view class="column" v-for="(row, index) in Promotion" @tap="toPromotion(row)" :key="index">
 					<view class="top">
@@ -68,7 +66,7 @@
 			</view>
 		</view>
 		<!-- 商品列表 -->
-		<!-- 	<view class="goods-list">
+		 	<view class="goods-list">
 			<view class="title">
 				<image src="../../static/img/hua.png"></image>
 				猜你喜欢
@@ -77,11 +75,11 @@
 			<view class="product-list">
 				<view
 					class="product"
-					v-for="product in productList"
+					v-for="product in hotGoodsList"
 					:key="product.goods_id"
 					@tap="toGoods(product)"
 				>
-					<image mode="widthFix" :src="product.img"></image>
+					<image mode="widthFix" :src="product.picUrl"></image>
 					<view class="name">{{ product.name }}</view>
 					<view class="info">
 						<view class="price">{{ product.price }}</view>
@@ -90,13 +88,17 @@
 				</view>
 			</view>
 			<view class="loading-text">{{ loadingText }}</view>
-		</view> -->
+		</view> 
 	</view>
 </template>
 
 <script>
 	//高德SDK
 	//import amap from '@/common/SDK/amap-wx.js';
+	import util from '@/common/SDK/amap-wx.js';
+	import api from "../../utils/api.js";
+	import check from "../../utils/check.js";
+	
 
 	export default {
 		data() {
@@ -107,39 +109,27 @@
 				statusTop: null,
 				city: '',
 				currentSwiper: 0,
-				// 轮播图片
-				swiperList: [{
-						id: 1,
-						src: 'url1',
-						img: '../../static/images/ncmq9n5pmdli1tlb0h8e.jpg'
-					},
-					{
-						id: 2,
-						src: 'url2',
-						img: '../../static/images/ojmotpyelp9tivef4k6d.jpg'
-					}
-
-				],
-				// 分类菜单
-				categoryList: [
-					{
-						id: 1,
-						name: '书籍1',
-						img: '../../static/img/category/7.png'
-					}
-				],
 				Promotion: [],
-				//猜你喜欢列表
-				productList: [{
-						goods_id: 0,
-						img: '../../static/img/goods/p1.jpg',
-						name: '商品名称商品名称商品名称商品名称商品名称',
-						price: '￥168',
-						slogan: '1235人付款'
-					}
-				],
-				loadingText: '正在加载...'
+				loadingText: '正在加载...',
+				newGoods: [],
+				//猜你喜欢
+				hotGoodsList: [],
+				topics: [],
+				brands: [],
+				groupons: [],
+				floorGoods: [],
+				//轮播广告图
+				banner: [],
+				channel: [],
+				coupon: []
 			};
+		},
+		onShareAppMessage: function() {
+			return {
+				title: '瓯越书屋',
+				desc: '瓯越书屋',
+				path: '/pages/index/index'
+			}
 		},
 		onPageScroll(e) {
 			//兼容iOS端下拉时顶部漂移
@@ -149,58 +139,69 @@
 		},
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 		onPullDownRefresh() {
-			setTimeout(function() {
+			setTimeout(function(){
 				uni.stopPullDownRefresh();
-			}, 1000);
+				uni.showNavigationBarLoading()
+                this.getIndexData();
+				uni.hideNavigationBarLoading();
+				uni.stopPullDownRefresh();
+				},1000)
+				console.log("aaa");
 		},
+
 		//上拉加载，需要自己在page.json文件中配置"onReachBottomDistance"
 		onReachBottom() {
 			uni.showToast({
-				title: '触发上拉加载'
+				title: '加载中'
 			});
-			let len = this.productList.length;
-			if (len >= 40) {
+			let len = this.hotGoodsList.length;
+			
 				this.loadingText = '到底了';
+				uni.showToast({
+					title: '到底了'
+				});
 				return false;
-			}
-			// 演示,随机加入商品,生成环境请替换为ajax请求
-			let end_goods_id = this.productList[len - 1].goods_id;
-			for (let i = 1; i <= 10; i++) {
-				let goods_id = end_goods_id + i;
-				let p = {
-					goods_id: goods_id,
-					img: '../../static/img/goods/p' + (goods_id % 10 == 0 ? 10 : goods_id % 10) + '.jpg',
-					name: '商品名称商品名称商品名称商品名称商品名称',
-					price: '￥168',
-					slogan: '1235人付款'
-				};
-				this.productList.push(p);
-			}
+			
+			
+			// 随机加,生成环境请替换为ajax请求
+// 			let end_goods_id = this.hotGoodsList[len - 1].goods_id;
+// 			for (let i = 1; i <= 10; i++) {
+// 				let goods_id = end_goods_id + i;
+// 				let p = {
+// 					goods_id: goods_id,
+// 					img: '../../static/img/goods/p' + (goods_id % 10 == 0 ? 10 : goods_id % 10) + '.jpg',
+// 					name: '2222',
+// 					price: '3333',
+// 					slogan: '444'
+// 				};
+// 				this.hotGoodsList.push(p);
+// 			}
 		},
-		getIndexData() {
-			let that = this;
-			util.request(api.IndexUrl).then(function(res) {
-				if (res.errno === 0) {
-					that.setData({
-						newGoods: res.data.newGoodsList,
-						hotGoods: res.data.hotGoodsList,
-						topics: res.data.topicList,
-						brands: res.data.brandList,
-						floorGoods: res.data.floorGoodsList,
-						banner: res.data.banner,
-						groupons: res.data.grouponList,
-						channel: res.data.channel,
-						coupon: res.data.couponList
-					});
-				}
-			});
-		},
-		onLoad(options) {
+	onLoad:function(options){ {
 			//开启定时器
 			//this.Timer();
 			//加载活动专区
 			//this.loadPromotion();
-			this.getIndexData();
+		uni.request({
+			url: api.IndexUrl,
+			method: 'GET',
+			data: {},
+			
+			success: res => {
+				console.log(res.data.data);
+				this.banner=res.data.data.banner;
+				this.channel=res.data.data.channel;
+				console.log("productList=="+res.data.data.productList);
+				this.hotGoodsList=res.data.data.hotGoodsList;
+			},
+			fail: (e) => {
+				console.log(res);
+				},
+			complete: () => {}
+		});
+			
+			};
+		
 			if (options.scene) {
 				//这个scene的值存在则证明首页的开启来源于朋友圈分享的图,同时可以通过获取到的goodId的值跳转导航到对应的详情页
 				var scene = decodeURIComponent(options.scene);
@@ -248,7 +249,6 @@
 				});
 			}
 
-			this.getIndexData();
 
 
 
@@ -356,7 +356,7 @@
 			//搜索跳转
 			toSearch() {
 				uni.showToast({
-					title: '建议跳转到新页面做搜索功能'
+					title: '跳转到新页面搜索(完善中)'
 				});
 			},
 			//轮播图跳转
@@ -373,21 +373,26 @@
 					url: '../goods/goods-list?cid=' + e.id + '&name=' + e.name
 				});
 			},
-			//推荐商品跳转
+			//推荐跳转
 			toPromotion(e) {
+				console.log("aawuccshi1shhh");
 				uni.showToast({
 					title: e.title,
 					icon: 'none'
 				});
 			},
-			//商品跳转
+			//书籍跳转
 			toGoods(e) {
+				//console.log(""wwwww");
+				console.log("toGoods");
+				console.log(e);
+				console.log("book_id:"+e.id);
 				uni.showToast({
-					title: '商品' + e.goods_id,
+					title: '书籍' + e.id,
 					icon: 'none'
 				});
 				uni.navigateTo({
-					url: '../goods/goods'
+					url: '../goods/goods?book_id='+e.id
 				});
 			},
 			//轮播图指示器

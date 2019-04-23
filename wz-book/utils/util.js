@@ -1,4 +1,4 @@
-var api = require('../config/api.js');
+var api = require('../utils/api.js');
 var app = getApp();
 
 function formatTime(date) {
@@ -24,13 +24,13 @@ function formatNumber(n) {
  */
 function request(url, data = {}, method = "GET") {
   return new Promise(function(resolve, reject) {
-    wx.request({
+    uni.request({
       url: url,
       data: data,
       method: method,
       header: {
         'Content-Type': 'application/json',
-        'X-Litemall-Token': wx.getStorageSync('token')
+        'X-Litemall-Token': uni.getStorageSync('token')
       },
       success: function(res) {
 
@@ -39,13 +39,13 @@ function request(url, data = {}, method = "GET") {
           if (res.data.errno == 501) {
             // 清除登录相关内容
             try {
-              wx.removeStorageSync('userInfo');
-              wx.removeStorageSync('token');
+              uni.removeStorageSync('userInfo');
+              uni.removeStorageSync('token');
             } catch (e) {
               // Do something when catch error
             }
             // 切换到登录页面
-            wx.navigateTo({
+            uni.navigateTo({
               url: '/pages/auth/login/login'
             });
           } else {
@@ -62,24 +62,44 @@ function request(url, data = {}, method = "GET") {
     })
   });
 }
-
+function setData(obj){  
+	//小程序端
+    let that = this;  
+    let keys = [];  
+    let val,data;  
+    Object.keys(obj).forEach(function(key){  
+         keys = key.split('.');  
+         val = obj[key];  
+         data = that.$data;  
+         keys.forEach(function(key2,index){  
+             if(index+1 == keys.length){  
+                 that.$set(data,key2,val);  
+             }else{  
+                 if(!data[key2]){  
+                    that.$set(data,key2,{});  
+                 }  
+             }  
+             data = data[key2];  
+         })  
+    });  
+}  
 function redirect(url) {
 
   //判断页面是否需要登录
   if (false) {
-    wx.redirectTo({
+    uni.redirectTo({
       url: '/pages/auth/login/login'
     });
     return false;
   } else {
-    wx.redirectTo({
+    uni.redirectTo({
       url: url
     });
   }
 }
 
 function showErrorToast(msg) {
-  wx.showToast({
+  uni.showToast({
     title: msg,
     image: '/static/images/icon_error.png'
   })

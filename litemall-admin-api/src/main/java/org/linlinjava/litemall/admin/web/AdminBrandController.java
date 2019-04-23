@@ -58,7 +58,7 @@ public class AdminBrandController {
             return ResponseUtil.badArgument();
         }
 
-        BigDecimal price = brand.getFloorPrice();
+        String price = brand.getFloorPrice();
         if (price == null) {
             return ResponseUtil.badArgument();
         }

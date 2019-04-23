@@ -194,7 +194,7 @@ public class WxAuthController {
 
         String code = CharUtil.getRandomNum(6);
         System.out.println("code="+code);
-       // notifyService.notifySmsTemplate(phoneNumber, NotifyType.CAPTCHA, new String[]{code});
+        notifyService.notifySmsTemplate(phoneNumber, NotifyType.CAPTCHA, new String[]{code});
 
         boolean successful = CaptchaCodeManager.addToCache(phoneNumber, code);
         if (!successful) {
@@ -238,8 +238,11 @@ public class WxAuthController {
         String code = JacksonUtil.parseString(body, "code");
         String wxCode = JacksonUtil.parseString(body, "wxCode");
 
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(mobile)
-                || StringUtils.isEmpty(wxCode) || StringUtils.isEmpty(code)) {
+        if (       StringUtils.isEmpty(username)
+                || StringUtils.isEmpty(password)
+                || StringUtils.isEmpty(mobile)
+               // || StringUtils.isEmpty(wxCode)
+                || StringUtils.isEmpty(code)) {
             return ResponseUtil.badArgument();
         }
 
@@ -317,6 +320,8 @@ public class WxAuthController {
         return ResponseUtil.ok(result);
     }
 
+
+
     /**
      * 账号密码重置
      *
@@ -391,4 +396,105 @@ public class WxAuthController {
         UserTokenManager.removeToken(userId);
         return ResponseUtil.ok();
     }
+    /**
+     * 手机验证码登录
+     *
+     * @param body    请求内容
+     *                {
+     *
+     *                mobile: xxx
+     *                code: xxx
+     *                }
+     *                其中code是手机验证码
+     * @param request 请求对象
+     * @return 登录结果
+     * 成功则
+     * {
+     * errno: 0,
+     * errmsg: '成功',
+     * data:
+     * {
+     * token: xxx,
+     * tokenExpire: xxx,
+     * userInfo: xxx
+     * }
+     * }
+     * 失败则 { errno: XXX, errmsg: XXX }
+     */
+    @PostMapping("login_by_phone")
+    public Object loginbyphone(@RequestBody String body, HttpServletRequest request) {
+        String mobile = JacksonUtil.parseString(body, "mobile");
+        String code = JacksonUtil.parseString(body, "code");
+
+
+        if (    StringUtils.isEmpty(mobile)
+              || StringUtils.isEmpty(code)) {
+            return ResponseUtil.badArgument();
+        }
+
+        if (!RegexUtil.isMobileExact(mobile)) {
+            return ResponseUtil.fail(AUTH_INVALID_MOBILE, "手机号格式不正确");
+        }
+        //判断验证码是否正确
+        String cacheCode = CaptchaCodeManager.getCachedCaptcha(mobile);
+        if (cacheCode == null || cacheCode.isEmpty() || !cacheCode.equals(code)) {
+            return ResponseUtil.fail(AUTH_CAPTCHA_UNMATCH, "验证码错误");
+        }
+
+//        String openId = null;
+//        try {
+//            WxMaJscode2SessionResult result = this.wxService.getUserService().getSessionInfo(wxCode);
+//            openId = result.getOpenid();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseUtil.fail(AUTH_OPENID_UNACCESS, "openid 获取失败");
+//        }
+//        userList = userService.queryByOpenid(openId);
+//        if (userList.size() > 1) {
+//            return ResponseUtil.serious();
+//        }
+//        if (userList.size() == 1) {
+//            LitemallUser checkUser = userList.get(0);
+//            String checkUsername = checkUser.getUsername();
+//            String checkPassword = checkUser.getPassword();
+//            if (!checkUsername.equals(openId) || !checkPassword.equals(openId)) {
+//                return ResponseUtil.fail(AUTH_OPENID_BINDED, "openid已绑定账号");
+//            }
+//        }
+
+        LitemallUser user = null;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user = new LitemallUser();
+        user.setMobile(mobile);
+       //user.setUsername(mobile);
+        user.setAvatar("https://yanxuan.nosdn.127.net/80841d741d7fa3073e0ae27bf487339f.jpg?imageView&quality=90&thumbnail=64x64");
+        user.setNickname(mobile);
+        user.setGender((byte) 0);
+        user.setUserLevel((byte) 0);
+        user.setUserLevel((byte) 0);
+        user.setStatus((byte) 0);
+        user.setLastLoginTime(LocalDateTime.now());
+        user.setLastLoginIp(IpUtil.client(request));
+       // userService.add(user);
+
+        // 给新用户发送推荐信息
+       // couponAssignService.assignForRegister(user.getId());
+
+        // userInfo
+        UserInfo userInfo = new UserInfo();
+        userInfo.setNickName(mobile);
+        userInfo.setAvatarUrl(user.getAvatar());
+        userInfo.setUserRole(user.getUserLevel().toString());
+        // token
+        UserToken userToken = UserTokenManager.generateToken(user.getId());
+
+        Map<Object, Object> result = new HashMap<Object, Object>();
+        result.put("token", userToken.getToken());
+        result.put("tokenExpire", userToken.getExpireTime().toString());
+        result.put("userInfo", userInfo);
+        return ResponseUtil.ok(result);
+    }
+
+
+
 }

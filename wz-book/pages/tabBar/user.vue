@@ -17,11 +17,11 @@
 		<view class="user">
 			<!-- 头像 -->
 			<view class="left">
-				<image :src="userInfo.face" @tap="toSetting"></image>
+				<image :src="userInfo.avatarUrl" @tap="toSetting"></image>
 			</view>
 			<!-- 昵称,个性签名 -->
 			<view class="right">
-				<view class="username" @tap="toLogin">{{userInfo.nickName}}</view>
+				<view class="username">{{userInfo.nickName}}</view>
 				<!-- <view class="signature" @tap="toSetting">{{userInfo.signature}}</view> -->
 			</view>
 			<!-- 二维码按钮 -->
@@ -37,9 +37,9 @@
 			<view class="title">VIP</view>
 			<view class="tis">VIP</view>
 		</view> -->
-		<!-- 订单-余额 -->
+		<!-- 积分 -->
 		<view class="order">
-			<!-- 订单类型 -->
+			<!-- 类型 -->
 			<view class="list">
 				<view class="box" v-for="(row,index) in orderList" :key="index" @tap="toOrderList(index)">
 					<view class="img">
@@ -62,30 +62,41 @@
 						<view class="img">
 							<view class="icon chongzhi"></view>
 						</view>
-						<view class="text">捐书</view>
+						<view class="text" @tap="onScanQRcode()">捐书</view>
 					</view>
 				</view>
 			</view>
 		</view>
 		<!-- 工具栏 -->
-<!-- 		<view class="toolbar">
-			<view class="title">我的工具栏</view>
+		<view class="toolbar">
+			<view class="title">我的家庭</view>
+			
 			<view class="list">
-				<view class="box" v-for="(row,index) in mytoolbarList" :key="index">
+				<view class="box" v-for="(row,index) in myhomeList" :key="index">
 					<view class="img">
 						<image :src="row.img"></image>
 					</view>
 					<view class="text">{{row.text}}</view>
 				</view>
 			</view>
-		</view> -->
+			<view class="category"  @tap="toCategory(row)">
+				<view class="img">
+					<image src="../../static/img/user/kefu.png"></image>
+				</view>
+				<view class="text">添加成员</view>
+			</view>
+		</view> 
 		<!-- 占位 -->
 		<view class="place-bottom"></view>
 	</view>
 </template>
-<script>
-     
 
+<script>
+var jweixin = require('jweixin-module')  
+jweixin.ready(function(){  
+    // TODO  
+	console.log("aa");
+});  
 
 	export default {
 		data() {
@@ -96,7 +107,7 @@
 				statusTop:null,
 				//个人信息,
 				userInfo:[],
-				// 订单类型
+				// 类型
 				orderList:[
 					{text:'待确认',icon:"fukuan"},
 					{text:'待审核',icon:"fahuo"},
@@ -105,22 +116,18 @@
 					
 				],
 				// 工具栏列表
-				mytoolbarList:[
-					{text:'我的收藏',img:'../../static/img/user/point.png'},
-					//{text:'优惠券',img:'../../static/img/user/quan.png'},
-					//{text:'新客豪礼',img:'../../static/img/user/renw.png'},
-					//{text:'领红包',img:'../../static/img/user/momey.png'},
+				myhomeList:[
+					{text:'儿子',img:'../../static/img/user/point.png'},
+					{text:'儿子1',img:'../../static/img/user/point.png'}
 					
-					//{text:'收货地址',img:'../../static/img/user/addr.png'},
-					//{text:'账户安全',img:'../../static/img/user/security.png'},
-					{text:'银行卡',img:'../../static/img/user/bank.png'},
-					//{text:'抽奖',img:'../../static/img/user/choujiang.png'},
-					// {text:'客服',img:'../../static/img/user/kefu.png'},
-					// {text:'签到',img:'../../static/img/user/mingxi.png'}
+					
 					
 				]
 			}
 		},
+		startRecognize() {
+			scan = new plus.barcode.Barcode('bcid');
+			scan.onmarked = onmarked; },
 		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
 		onPullDownRefresh() {
 		    setTimeout(function () {
@@ -141,30 +148,33 @@
 			// #endif
 			
 			//首先将实例指针保存到全局变量 self 方便在异步请求中访问实例本身
-			const value = uni.getStorageSync('token');
-			console.log("token"+value);
+			const token = uni.getStorageSync('token');
+			console.log("token=="+token);
+			const userinfo = uni.getStorageSync('userInfo');
+			console.log("userinfo=="+userinfo);
+			console.log("nickName=="+userinfo.nickName);
+			this.userInfo=userinfo;
 			
-			uni.getStorage({
-				key: 'userinfo',
-				success: function(res) {
-					console.log("aaaa");
-					const listdata = res.data;
-					nickName = listdata.nickName;
-					avatarUrl = listdata.avatarUrl;
-					face =listdata.face;
-					console.log("user数据是:" + nickName)
-					console.log("avatarUrl数据是:" + avatarUrl)
-					
-					self.userInfo = listdata;
-				}
-			});
+
+		},
+		onScanQRcode(){
+			uni.scanCode(
+			success
+			
+			)
+	
 		},
 		onReady(){
-			//此处，演示,每次页面初次渲染都把登录状态重置
+			//此处,每次页面初次渲染都把登录状态重置
 			uni.setStorage({
-				key: 'UserInfo',
+				key: 'userinfo',
 				data: false,
 				success: function () {
+					this.isfirst=false;
+					const userinfo = uni.getStorageSync('userInfo');
+					this.userInfo=userinfo;
+					const token = uni.getStorageSync('token');
+					this.token=token;
 				},
 				fail:function(e){
 				}
@@ -172,9 +182,9 @@
 		},
 		onShow(){
 			const value = uni.getStorageSync('token');
-			console.log("token"+value);
+			console.log("get token value "+value);
 			uni.getStorage({
-				key: 'UserInfo',
+				key: 'userinfo',
 				success: (res)=>{
 					if(!res.data){
 						const first = res.data.isfirst;
@@ -184,11 +194,12 @@
 						
 						return ;
 					}
-					this.user = res.data;
+					this.userInfo=userInfo;
 					console.log("登录成功");
-					console.log(user.data());
+					
 				},
 				fail:(e)=>{
+					console.log("登录失败");
 					this.toLogin(); 
 				}
 			});
@@ -208,6 +219,13 @@
 // 					url:'../user/setting/setting'
 // 				})
              uni.showToast({title: '功能完善中',icon:"none"});
+			 uni.scanCode({
+    success: function (res) {
+        console.log('条码类型：' + res.scanType);
+        console.log('条码内容：' + res.result);
+    }
+});
+			 
 			},
 			toMyQR(){
 				uni.navigateTo({
@@ -528,6 +546,32 @@
 					color: #3d3d3d;
 				}
 			}
+		}
+	}
+			.category {
+		width: 25%;
+		margin-top: 50upx;
+		display: flex;
+		flex-wrap: wrap;
+	
+		.img {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+	
+			image {
+				width: 9vw;
+				height: 9vw;
+			}
+		}
+	
+		.text {
+			margin-top: 16upx;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			font-size: 24upx;
+			color: #3c3c3c;
 		}
 	}
 </style>

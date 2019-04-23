@@ -73,7 +73,7 @@
         <el-form-item style="width: 700px;" label="专题内容">
           <editor :init="editorInit" v-model="dataForm.content"/>
         </el-form-item>
-        <el-form-item label="商品低价" prop="price">
+        <el-form-item label="书籍数" prop="price">
           <el-input v-model="dataForm.price"/>
         </el-form-item>
         <el-form-item label="阅读量" prop="readCount">

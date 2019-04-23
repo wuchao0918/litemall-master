@@ -23,7 +23,7 @@
           <el-tag >{{ genderDic[scope.row.gender] }}</el-tag>
         </template>
       </el-table-column>
-
+      <el-table-column align="center" label="社区" prop="birthday"/>
       <el-table-column align="center" label="生日" prop="birthday"/>
 
       <el-table-column align="center" label="用户等级" prop="userLevel">
@@ -59,6 +59,11 @@
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="dataForm.password" type="password" auto-complete="off"/>
+        </el-form-item>
+        <el-form-item label="社区" prop="brandid">
+          <el-select v-model="dataForm.brandid">
+            <el-option v-for="brand in brandList" :key="brand.id" :label="brand.name" :value="brand.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="gender">
           <el-select v-model="dataForm.gender">
@@ -106,6 +111,7 @@ export default {
     return {
       list: null,
       total: 0,
+      brandList: '',
       listLoading: true,
       listQuery: {
         page: 1,
@@ -152,7 +158,10 @@ export default {
         this.list = response.data.data.items
         this.total = response.data.data.total
         this.listLoading = false
-      }).catch(() => {
+        this.brandList = response.data.data.brandList
+        console.log(response.data.data.brandList)
+      }
+      ).catch(() => {
         this.list = []
         this.total = 0
         this.listLoading = false

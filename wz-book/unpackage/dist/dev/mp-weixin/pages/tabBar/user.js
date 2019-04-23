@@ -207,6 +207,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 {
   data: function data() {
     return {
@@ -215,18 +216,8 @@ __webpack_require__.r(__webpack_exports__);
       headerTop: null,
       statusTop: null,
       //个人信息,
-      userInfo: {
-        nickName: '点击登录',
-        avatarUrl: '../../static/img/face.jpg',
-        userRole: null,
-        username: '游客1002',
-        face: '../../static/img/face.jpg',
-        isfirst: true,
-        integral: 0,
-        balance: 0,
-        envelope: 0 },
-
-      // 订单类型
+      userInfo: [],
+      // 类型
       orderList: [
       { text: '待确认', icon: "fukuan" },
       { text: '待审核', icon: "fahuo" },
@@ -235,22 +226,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
       // 工具栏列表
-      mytoolbarList: [
-      { text: '我的收藏', img: '../../static/img/user/point.png' },
-      //{text:'优惠券',img:'../../static/img/user/quan.png'},
-      //{text:'新客豪礼',img:'../../static/img/user/renw.png'},
-      //{text:'领红包',img:'../../static/img/user/momey.png'},
-
-      //{text:'收货地址',img:'../../static/img/user/addr.png'},
-      //{text:'账户安全',img:'../../static/img/user/security.png'},
-      { text: '银行卡', img: '../../static/img/user/bank.png' }] };
-
+      myhomeList: [
+      { text: '儿子', img: '../../static/img/user/point.png' },
+      { text: '儿子1', img: '../../static/img/user/point.png' }] };
 
 
 
 
 
   },
+  startRecognize: function startRecognize() {
+    scan = new plus.barcode.Barcode('bcid');
+    scan.onmarked = onmarked;},
   //下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
   onPullDownRefresh: function onPullDownRefresh() {
     setTimeout(function () {
@@ -271,44 +258,62 @@ __webpack_require__.r(__webpack_exports__);
 
 
     //首先将实例指针保存到全局变量 self 方便在异步请求中访问实例本身
+    var token = uni.getStorageSync('token');
+    console.log("token==" + token);
+    var userinfo = uni.getStorageSync('userInfo');
+    console.log("userinfo==" + userinfo);
+    console.log("nickName==" + userinfo.nickName);
+    this.userInfo = userinfo;
 
-    uni.getStorage({
-      key: 'userinfo',
+
+  },
+  onScanQRcode: function onScanQRcode() {
+
+    uni.scanCode({
       success: function success(res) {
-        var nickName = res.data.nickName;
-        console.log("user数据是:" + nickName);
-        this.user = res.data;
-        console.log(this.$data);
+        console.log('条码类型：' + res.scanType);
+        console.log('条码内容：' + res.result);
       } });
+
+
 
   },
   onReady: function onReady() {
-    //此处，演示,每次页面初次渲染都把登录状态重置
+    //此处,每次页面初次渲染都把登录状态重置
     uni.setStorage({
-      key: 'UserInfo',
+      key: 'userinfo',
       data: false,
       success: function success() {
+        this.isfirst = false;
+        var userinfo = uni.getStorageSync('userInfo');
+        this.userInfo = userinfo;
+        var token = uni.getStorageSync('token');
+        this.token = token;
       },
       fail: function fail(e) {
       } });
 
   },
   onShow: function onShow() {var _this = this;
+    var value = uni.getStorageSync('token');
+    console.log("get token value " + value);
     uni.getStorage({
-      key: 'UserInfo',
+      key: 'userinfo',
       success: function success(res) {
         if (!res.data) {
           var first = res.data.isfirst;
           if (first) {
             _this.toLogin();
           }
+
           return;
         }
-        _this.user = res.data;
+        _this.userInfo = userInfo;
         console.log("登录成功");
-        console.log(user.data());
+
       },
       fail: function fail(e) {
+        console.log("登录失败");
         _this.toLogin();
       } });
 
@@ -324,8 +329,16 @@ __webpack_require__.r(__webpack_exports__);
       uni.navigateTo({ url: '../user/order_list/order_list?tbIndex=' + index });
     },
     toSetting: function toSetting() {
-      uni.navigateTo({
-        url: '../user/setting/setting' });
+      // 				uni.navigateTo({
+      // 					url:'../user/setting/setting'
+      // 				})
+      uni.showToast({ title: '功能完善中', icon: "none" });
+      uni.scanCode({
+        success: function success(res) {
+          console.log('条码类型：' + res.scanType);
+          console.log('条码内容：' + res.result);
+        } });
+
 
     },
     toMyQR: function toMyQR() {
@@ -342,8 +355,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     isLogin: function isLogin() {
       //实际应用中,用户登录状态应该用token等方法去维持登录状态.
-      var value = uni.getStorageSync('UserInfo');
-      if (value) {
+      var token = uni.getStorageSync('token');
+      console.log("islogin token is" + token);
+      if (token) {
         return true;
       }
       return false;
@@ -392,38 +406,21 @@ var render = function() {
       [
         _c("view", { staticClass: "addr" }),
         _c("view", { staticClass: "input-box" }),
-        _c("view", { staticClass: "icon-btn" }, [
-          _c("view", {
-            staticClass: "icon tongzhi",
-            attrs: { eventid: "f1530cd0-0" },
-            on: { tap: _vm.toMsg }
-          }),
-          _c("view", {
-            staticClass: "icon setting",
-            attrs: { eventid: "f1530cd0-1" },
-            on: { tap: _vm.toSetting }
-          })
-        ])
+        _c("view", { staticClass: "icon-btn" })
       ]
     ),
     _c("view", { staticClass: "place" }),
     _c("view", { staticClass: "user" }, [
       _c("view", { staticClass: "left" }, [
         _c("image", {
-          attrs: { src: _vm.userInfo.face, eventid: "f1530cd0-2" },
+          attrs: { src: _vm.userInfo.avatarUrl, eventid: "f1530cd0-0" },
           on: { tap: _vm.toSetting }
         })
       ]),
       _c("view", { staticClass: "right" }, [
-        _c(
-          "view",
-          {
-            staticClass: "username",
-            attrs: { eventid: "f1530cd0-3" },
-            on: { tap: _vm.toLogin }
-          },
-          [_vm._v(_vm._s(_vm.userInfo.nickName))]
-        )
+        _c("view", { staticClass: "username" }, [
+          _vm._v(_vm._s(_vm.userInfo.nickName))
+        ])
       ])
     ]),
     _c("view", { staticClass: "order" }, [
@@ -436,7 +433,7 @@ var render = function() {
             {
               key: index,
               staticClass: "box",
-              attrs: { eventid: "f1530cd0-4-" + index },
+              attrs: { eventid: "f1530cd0-1-" + index },
               on: {
                 tap: function($event) {
                   _vm.toOrderList(index)
@@ -461,15 +458,32 @@ var render = function() {
             _c("view", { staticClass: "text" }, [_vm._v("积分")])
           ])
         ]),
-        _vm._m(0)
+        _c("view", { staticClass: "right" }, [
+          _c("view", { staticClass: "box" }, [
+            _vm._m(0),
+            _c(
+              "view",
+              {
+                staticClass: "text",
+                attrs: { eventid: "f1530cd0-2" },
+                on: {
+                  tap: function($event) {
+                    _vm.onScanQRcode()
+                  }
+                }
+              },
+              [_vm._v("捐书")]
+            )
+          ])
+        ])
       ])
     ]),
     _c("view", { staticClass: "toolbar" }, [
-      _c("view", { staticClass: "title" }, [_vm._v("我的工具栏")]),
+      _c("view", { staticClass: "title" }, [_vm._v("我的家庭")]),
       _c(
         "view",
         { staticClass: "list" },
-        _vm._l(_vm.mytoolbarList, function(row, index) {
+        _vm._l(_vm.myhomeList, function(row, index) {
           return _c("view", { key: index, staticClass: "box" }, [
             _c("view", { staticClass: "img" }, [
               _c("image", { attrs: { src: row.img } })
@@ -477,6 +491,19 @@ var render = function() {
             _c("view", { staticClass: "text" }, [_vm._v(_vm._s(row.text))])
           ])
         })
+      ),
+      _c(
+        "view",
+        {
+          staticClass: "category",
+          attrs: { eventid: "f1530cd0-3" },
+          on: {
+            tap: function($event) {
+              _vm.toCategory(_vm.row)
+            }
+          }
+        },
+        [_vm._m(1), _c("view", { staticClass: "text" }, [_vm._v("添加成员")])]
       )
     ]),
     _c("view", { staticClass: "place-bottom" })
@@ -487,13 +514,16 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("view", { staticClass: "right" }, [
-      _c("view", { staticClass: "box" }, [
-        _c("view", { staticClass: "img" }, [
-          _c("view", { staticClass: "icon chongzhi" })
-        ]),
-        _c("view", { staticClass: "text" }, [_vm._v("捐书")])
-      ])
+    return _c("view", { staticClass: "img" }, [
+      _c("view", { staticClass: "icon chongzhi" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("view", { staticClass: "img" }, [
+      _c("image", { attrs: { src: "../../static/img/user/kefu.png" } })
     ])
   }
 ]

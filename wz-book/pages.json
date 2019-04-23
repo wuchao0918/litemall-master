@@ -181,18 +181,13 @@
 				"selectedIconPath": "static/img/tabBar/home-on.png",
 				"text": "首页"
 			},
-			{
-				"pagePath": "pages/tabBar/category",
-				"iconPath": "static/img/tabBar/category.png",
-				"selectedIconPath": "static/img/tabBar/category-on.png",
-				"text": "分类"
-			},
-			{
-				"pagePath": "pages/tabBar/cart",
-				"iconPath": "static/img/tabBar/cart.png",
-				"selectedIconPath": "static/img/tabBar/cart-on.png",
-				"text": "购物车"
-			},
+// 			{
+// 				"pagePath": "pages/tabBar/category",
+// 				"iconPath": "static/img/tabBar/category.png",
+// 				"selectedIconPath": "static/img/tabBar/category-on.png",
+// 				"text": "分类"
+// 			},
+
 			{
 				"pagePath": "pages/tabBar/user",
 				"iconPath": "static/img/tabBar/user.png",

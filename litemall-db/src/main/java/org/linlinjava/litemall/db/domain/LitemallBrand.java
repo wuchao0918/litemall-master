@@ -76,7 +76,7 @@ public class LitemallBrand {
      *
      * @mbg.generated
      */
-    private BigDecimal floorPrice;
+    private String floorPrice;
 
     /**
      *
@@ -233,7 +233,7 @@ public class LitemallBrand {
      *
      * @mbg.generated
      */
-    public BigDecimal getFloorPrice() {
+    public String getFloorPrice() {
         return floorPrice;
     }
 
@@ -245,7 +245,7 @@ public class LitemallBrand {
      *
      * @mbg.generated
      */
-    public void setFloorPrice(BigDecimal floorPrice) {
+    public void setFloorPrice(String floorPrice) {
         this.floorPrice = floorPrice;
     }
 
@@ -390,7 +390,7 @@ public class LitemallBrand {
         result = prime * result + ((getDesc() == null) ? 0 : getDesc().hashCode());
         result = prime * result + ((getPicUrl() == null) ? 0 : getPicUrl().hashCode());
         result = prime * result + ((getSortOrder() == null) ? 0 : getSortOrder().hashCode());
-        result = prime * result + ((getFloorPrice() == null) ? 0 : getFloorPrice().hashCode());
+       // result = prime * result + ((getFloorPrice() == null) ? 0 : getFloorPrice().hashCode());
         result = prime * result + ((getAddTime() == null) ? 0 : getAddTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         result = prime * result + ((getDeleted() == null) ? 0 : getDeleted().hashCode());
@@ -421,7 +421,7 @@ public class LitemallBrand {
         desc("desc", "desc", "VARCHAR", true),
         picUrl("pic_url", "picUrl", "VARCHAR", false),
         sortOrder("sort_order", "sortOrder", "TINYINT", false),
-        floorPrice("floor_price", "floorPrice", "DECIMAL", false),
+        floorPrice("floor_price", "floorPrice", "VARCHAR", false),
         addTime("add_time", "addTime", "TIMESTAMP", false),
         updateTime("update_time", "updateTime", "TIMESTAMP", false),
         deleted("deleted", "deleted", "BIT", false);

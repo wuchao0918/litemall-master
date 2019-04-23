@@ -35,6 +35,7 @@ import java.util.concurrent.*;
 public class WxGoodsController {
 	private final Log logger = LogFactory.getLog(WxGoodsController.class);
 
+
 	@Autowired
 	private LitemallGoodsService goodsService;
 
@@ -352,6 +353,21 @@ public class WxGoodsController {
 		Map<String, Object> data = new HashMap<>();
 		data.put("goodsCount", goodsCount);
 		return ResponseUtil.ok(data);
+	}
+
+
+
+	/**
+	 * 增加商品
+	 *
+	 * @return 增加商品
+	 */
+	@GetMapping("add")
+	public void add() {
+		LitemallGoods goods=new LitemallGoods();
+
+
+		goodsService.add(goods);
 	}
 
 }

@@ -11,7 +11,7 @@
     <result column="desc" jdbcType="VARCHAR" property="desc" />
     <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
     <result column="sort_order" jdbcType="TINYINT" property="sortOrder" />
-    <result column="floor_price" jdbcType="DECIMAL" property="floorPrice" />
+    <result column="floor_price" jdbcType="VARCHAR" property="floorPrice" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
@@ -221,7 +221,7 @@
       sort_order, floor_price, add_time, 
       update_time, deleted)
     values (#{name,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR}, #{picUrl,jdbcType=VARCHAR}, 
-      #{sortOrder,jdbcType=TINYINT}, #{floorPrice,jdbcType=DECIMAL}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{sortOrder,jdbcType=TINYINT}, #{floorPrice,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="org.linlinjava.litemall.db.domain.LitemallBrand">
@@ -273,7 +273,7 @@
         #{sortOrder,jdbcType=TINYINT},
       </if>
       <if test="floorPrice != null">
-        #{floorPrice,jdbcType=DECIMAL},
+        #{floorPrice,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
@@ -319,7 +319,7 @@
         sort_order = #{record.sortOrder,jdbcType=TINYINT},
       </if>
       <if test="record.floorPrice != null">
-        floor_price = #{record.floorPrice,jdbcType=DECIMAL},
+        floor_price = #{record.floorPrice,jdbcType=VARCHAR},
       </if>
       <if test="record.addTime != null">
         add_time = #{record.addTime,jdbcType=TIMESTAMP},
@@ -346,7 +346,7 @@
       `desc` = #{record.desc,jdbcType=VARCHAR},
       pic_url = #{record.picUrl,jdbcType=VARCHAR},
       sort_order = #{record.sortOrder,jdbcType=TINYINT},
-      floor_price = #{record.floorPrice,jdbcType=DECIMAL},
+      floor_price = #{record.floorPrice,jdbcType=VARCHAR},
       add_time = #{record.addTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       deleted = #{record.deleted,jdbcType=BIT}
@@ -374,7 +374,7 @@
         sort_order = #{sortOrder,jdbcType=TINYINT},
       </if>
       <if test="floorPrice != null">
-        floor_price = #{floorPrice,jdbcType=DECIMAL},
+        floor_price = #{floorPrice,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
@@ -398,7 +398,7 @@
       `desc` = #{desc,jdbcType=VARCHAR},
       pic_url = #{picUrl,jdbcType=VARCHAR},
       sort_order = #{sortOrder,jdbcType=TINYINT},
-      floor_price = #{floorPrice,jdbcType=DECIMAL},
+      floor_price = #{floorPrice,jdbcType=VARCHAR},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=BIT}

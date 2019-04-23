@@ -10,7 +10,9 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.core.util.bcrypt.BCryptPasswordEncoder;
 import org.linlinjava.litemall.core.validator.Order;
 import org.linlinjava.litemall.core.validator.Sort;
+import org.linlinjava.litemall.db.domain.LitemallBrand;
 import org.linlinjava.litemall.db.domain.LitemallUser;
+import org.linlinjava.litemall.db.service.LitemallBrandService;
 import org.linlinjava.litemall.db.service.LitemallUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -33,20 +35,24 @@ public class AdminUserController {
     @Autowired
     private LitemallUserService userService;
 
+    @Autowired
+    private LitemallBrandService brandService;
+
     @RequiresPermissions("admin:user:list")
     @RequiresPermissionsDesc(menu={"用户管理" , "会员管理"}, button="查询")
     @GetMapping("/list")
-    public Object list(String username, String mobile,
+    public Object list(String id, String name,String username, String mobile,
                        @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer limit,
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
         List<LitemallUser> userList = userService.querySelective(username, mobile, page, limit, sort, order);
+        List<LitemallBrand> brandList = brandService.querySelective(id, name, 1, 100, sort, order);
         long total = PageInfo.of(userList).getTotal();
         Map<String, Object> data = new HashMap<>();
         data.put("total", total);
         data.put("items", userList);
-
+        data.put("brandList", brandList);
         return ResponseUtil.ok(data);
     }
 

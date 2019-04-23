@@ -184,7 +184,8 @@
   display: -ms-flexbox;
   display: flex;
 }
-.category-list .left, .category-list .right {
+.category-list .left,
+  .category-list .right {
     position: absolute;
     top: 100rpx;
 

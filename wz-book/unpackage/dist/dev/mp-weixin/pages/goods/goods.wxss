@@ -778,13 +778,15 @@ page {
           text-align: center;
           font-size: 26rpx;
 }
-.popup.spec .length .number .sub, .popup.spec .length .number .add {
+.popup.spec .length .number .sub,
+      .popup.spec .length .number .add {
         width: 60rpx;
         height: 60rpx;
         background-color: #f3f3f3;
         border-radius: 5rpx;
 }
-.popup.spec .length .number .sub .icon, .popup.spec .length .number .add .icon {
+.popup.spec .length .number .sub .icon,
+        .popup.spec .length .number .add .icon {
           font-size: 30rpx;
           width: 60rpx;
           height: 60rpx;

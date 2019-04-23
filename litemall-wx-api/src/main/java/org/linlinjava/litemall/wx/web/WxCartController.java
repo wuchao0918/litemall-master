@@ -476,7 +476,7 @@ public class WxCartController {
         // 根据订单商品总价计算运费，满88则免运费，否则8元；
         BigDecimal freightPrice = new BigDecimal(0.00);
         if (checkedGoodsPrice.compareTo(SystemConfig.getFreightLimit()) < 0) {
-            freightPrice = SystemConfig.getFreight();
+         //   freightPrice = SystemConfig.getFreight();
         }
 
         // 可以使用的其他钱，例如用户积分

@@ -191,6 +191,8 @@ public class LitemallGoodsService {
         goodsMapper.logicalDeleteByPrimaryKey(id);
     }
 
+
+    /*增加书籍*/
     public void add(LitemallGoods goods) {
         goods.setAddTime(LocalDateTime.now());
         goods.setUpdateTime(LocalDateTime.now());
@@ -242,6 +244,7 @@ public class LitemallGoodsService {
         return cats;
     }
 
+    //添加书籍校验
     public boolean checkExistByName(String name) {
         LitemallGoodsExample example = new LitemallGoodsExample();
         example.or().andNameEqualTo(name).andIsOnSaleEqualTo(true).andDeletedEqualTo(false);

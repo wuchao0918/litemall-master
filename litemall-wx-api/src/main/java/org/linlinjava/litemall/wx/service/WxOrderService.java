@@ -324,7 +324,7 @@ public class WxOrderService {
         // 根据订单商品总价计算运费，满足条件（例如88元）则免运费，否则需要支付运费（例如8元）；
         BigDecimal freightPrice = new BigDecimal(0.00);
         if (checkedGoodsPrice.compareTo(SystemConfig.getFreightLimit()) < 0) {
-            freightPrice = SystemConfig.getFreight();
+           // freightPrice = SystemConfig.getFreight();
         }
 
         // 可以使用的其他钱，例如用户积分
@@ -552,8 +552,8 @@ public class WxOrderService {
             result = wxPayService.createOrder(orderRequest);
 
             //缓存prepayID用于后续模版通知
-            String prepayId = "1";
-         //  String prepayId = result.getPackageValue();
+            //String prepayId = "1";
+           String prepayId = result.getPackageValue();
             prepayId = prepayId.replace("prepay_id=", "");
             LitemallUserFormid userFormid = new LitemallUserFormid();
             userFormid.setOpenid(user.getWeixinOpenid());

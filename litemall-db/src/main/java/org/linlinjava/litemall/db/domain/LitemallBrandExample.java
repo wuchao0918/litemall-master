@@ -939,7 +939,7 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceEqualTo(BigDecimal value) {
+        public Criteria andFloorPriceEqualTo(String value) {
             addCriterion("floor_price =", value, "floorPrice");
             return (Criteria) this;
         }
@@ -956,7 +956,7 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceNotEqualTo(BigDecimal value) {
+        public Criteria andFloorPriceNotEqualTo(String value) {
             addCriterion("floor_price <>", value, "floorPrice");
             return (Criteria) this;
         }
@@ -973,7 +973,7 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceGreaterThan(BigDecimal value) {
+        public Criteria andFloorPriceGreaterThan(String value) {
             addCriterion("floor_price >", value, "floorPrice");
             return (Criteria) this;
         }
@@ -990,7 +990,7 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceGreaterThanOrEqualTo(BigDecimal value) {
+        public Criteria andFloorPriceGreaterThanOrEqualTo(String value) {
             addCriterion("floor_price >=", value, "floorPrice");
             return (Criteria) this;
         }
@@ -1007,7 +1007,7 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceLessThan(BigDecimal value) {
+        public Criteria andFloorPriceLessThan(String value) {
             addCriterion("floor_price <", value, "floorPrice");
             return (Criteria) this;
         }
@@ -1024,7 +1024,7 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceLessThanOrEqualTo(BigDecimal value) {
+        public Criteria andFloorPriceLessThanOrEqualTo(String value) {
             addCriterion("floor_price <=", value, "floorPrice");
             return (Criteria) this;
         }
@@ -1051,12 +1051,12 @@ public class LitemallBrandExample {
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceBetween(BigDecimal value1, BigDecimal value2) {
+        public Criteria andFloorPriceBetween(String value1, String value2) {
             addCriterion("floor_price between", value1, value2, "floorPrice");
             return (Criteria) this;
         }
 
-        public Criteria andFloorPriceNotBetween(BigDecimal value1, BigDecimal value2) {
+        public Criteria andFloorPriceNotBetween(String value1, String value2) {
             addCriterion("floor_price not between", value1, value2, "floorPrice");
             return (Criteria) this;
         }

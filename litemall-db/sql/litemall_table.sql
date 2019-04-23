@@ -701,6 +701,7 @@ DROP TABLE IF EXISTS `litemall_user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `litemall_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `brand_id` int(11) not null,
   `username` varchar(63) NOT NULL COMMENT '用户名称',
   `password` varchar(63) NOT NULL DEFAULT '' COMMENT '用户密码',
   `gender` tinyint(3) NOT NULL DEFAULT '0' COMMENT '性别：0 未知， 1男， 1 女',

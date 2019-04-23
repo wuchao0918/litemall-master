@@ -178,7 +178,7 @@ export const asyncRouterMap = [
         name: 'brand',
         meta: {
           perms: ['GET /admin/brand/list', 'POST /admin/brand/create', 'GET /admin/brand/read', 'POST /admin/brand/update', 'POST /admin/brand/delete'],
-          title: '出版商',
+          title: '社区',
           noCache: true
         }
       },

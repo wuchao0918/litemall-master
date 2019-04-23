@@ -7,7 +7,6 @@ import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.db.domain.LitemallCategory;
 import org.linlinjava.litemall.db.domain.LitemallGoods;
 import org.linlinjava.litemall.db.service.*;
-import org.linlinjava.litemall.wx.annotation.IsbnScab;
 import org.linlinjava.litemall.wx.annotation.LoginUser;
 import org.linlinjava.litemall.wx.service.HomeCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +131,7 @@ public class WxHomeController {
         executorService.submit(floorGoodsListTask);
 
         try {
+            data.put("errno", 0);
             data.put("banner", bannerTask.get());
             data.put("channel", channelTask.get());
             data.put("couponList", couponListTask.get());

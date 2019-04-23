@@ -58,9 +58,9 @@ class SystemInistService {
         infos.put(SystemInfoPrinter.CREATE_PART_COPPER + 2, "微信相关");
         infos.put("微信APP KEY", environment.getProperty("litemall.wx.app-id"));
         infos.put("微信APP-SECRET", environment.getProperty("litemall.wx.app-secret"));
-       // infos.put("微信支付MCH-ID", environment.getProperty("litemall.wx.mch-id"));
-       // infos.put("微信支付MCH-KEY", environment.getProperty("litemall.wx.mch-key"));
-    //    infos.put("微信支付通知地址", environment.getProperty("litemall.wx.notify-url"));
+        infos.put("微信支付MCH-ID", environment.getProperty("litemall.wx.mch-id"));
+        infos.put("微信支付MCH-KEY", environment.getProperty("litemall.wx.mch-key"));
+        infos.put("微信支付通知地址", environment.getProperty("litemall.wx.notify-url"));
 
         //测试获取System表配置信息
         infos.put(SystemInfoPrinter.CREATE_PART_COPPER + 3, "系统设置");

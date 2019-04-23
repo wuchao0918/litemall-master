@@ -32,7 +32,7 @@
 
 <script>
 	import md5 from "@/common/SDK/md5.min.js";
-	import api from "../../api.js";
+	import api from "../../utils/api.js";
 	import check from "../../utils/check.js";
 	var app = getApp();
 	export default {
@@ -56,9 +56,9 @@
 		},
 		onLoad() {
 			//APP显示第三方登录
-			// #ifdef APP-PLUS
+			//// #ifdef APP-PLUS
 			this.isShowOauth = true;
-			// #endif
+			//// #endif
 			this.getProvider();
 		},
 		methods: {
@@ -193,7 +193,7 @@
 						let len = res.provider.length;
 						for (let i = 0; i < len; i++) {
 							//有服务才显示按钮图标
-							this.showProvider[res.provider[i]] = true;
+							this.showProvider[res.provider[i]] = false;
 						}
 						if (res.provider.length == 0) {
 							this.isShowOauth = false;
@@ -245,16 +245,15 @@
 								self.userInfo = userInfo;
 								uni.setStorageSync('userInfo', userInfo);
 								uni.setStorageSync('token', data.token);
+
+
+
 								console.log("返回数据状态:" + userInfo);
 								console.log("返回数据状态:" + userInfo.nickName);
 								uni.setStorage({
 									key: "userinfo",
 									data: {
-                                        nickName: userInfo.nickName,
-										avatarUrl: userInfo.avatarUrl,
-										userRole: userInfo.userRole,
-										username: userInfo.nickName,
-										face: userInfo.avatarUrl,
+										userInfo,
 										isfirst: false
 									},
 									success: function() {
